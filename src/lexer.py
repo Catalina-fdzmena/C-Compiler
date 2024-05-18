@@ -166,15 +166,17 @@ def t_error(t):
 #--------------------------------------------------------------------
 #Lectura de lexer para pruebas
 
-data_file = open("./test/test_case1.txt", "r")
-data = data_file.read()
+#data_file = open("./test/test_case1.txt", "r")
+#data = data_file.read()
 
 lexer = lex.lex()
-lexer.input(data)
+#lexer.input(data)
 
-# Tokenize
+# Tokenize para encontrar errores
+"""
 while True:
     tok = lexer.token()
     if not tok: 
         break      # No more input
     print(tok)
+"""
