@@ -1,0 +1,42 @@
+program main {
+
+// TIPOS DE VARIABLES
+int i, j, k;
+float f;
+double d;
+long l;
+string s;
+char c, e, f, g, h;
+bool b;
+
+int i = 1, j = 2, k;
+float f = 3.5f;
+double d = 6.9d;
+long l = 123l;
+string s = "NOT ME";
+char c = 'c', e = 'e', f = 'f', g = 'g', h = 'h';
+bool b = true;
+
+i = 123456;
+f = 123.456f;
+d = 12345.6d;
+l = 1234567890l;
+s = "Hello World!";
+c = 'a';
+b = true;
+b = false;
+
+// NUMEROS NEGATIVOS
+//i = -123456;
+//f = -123.456f;
+//d = -12345.6d;
+//l = -1234567890l;
+
+i = i;
+i = 1 + i;
+/*
+if (a < b) {
+ }*/
+}
+
+
