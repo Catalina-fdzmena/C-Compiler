@@ -4,7 +4,7 @@
 
 import ply.lex as lex
 
-#Lista de palabraas reservadas
+#Lista de palabras reservadas
 reserved = {
    'program' : 'PROGRAM',
    'if' : 'IF',
@@ -25,6 +25,16 @@ reserved = {
    'char' : 'CHAR',
    'double' : 'DOUBLE',
    'long' : 'LONG',
+
+    'break' : 'BREAK',
+    'void' : 'VOID',
+    'new' : 'NEW',
+    'private' : 'PRIVATE',
+    'return' : 'RETURN',
+    'true' : 'TRUE',
+    'false' : 'FALSE',
+    'const' : 'CONST',
+    'public' : 'PUBLIC',
 }
 
 #Lista de tokens
@@ -179,8 +189,8 @@ def t_error(t):
 	print("Illegal character '%s'" % t.value[0])
 	t.lexer.skip(1)
 	
-#------------------------------------------------------------------
-#Lectura de lexer
+#--------------------------------------------------------------------
+#Lectura de lexer para pruebas
 
 data_file = open("./test/test_case1.txt", "r")
 data = data_file.read()
