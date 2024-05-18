@@ -1,0 +1,7 @@
+program test {
+    int arr[10];
+    arr[0] = 1 + 3;
+    arr[1 + 3] = 5 * 8;
+    x = arr[0] + arr[1];
+    write(arr[0 + 1]);
+}

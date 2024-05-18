@@ -39,29 +39,28 @@ reserved = {
 
 #Lista de tokens
 tokens = [
-    # // /**/ ... 
-	'COMMENT', 'MULTILINECOMMENT', 'PREPROCESSOR',
+    # // /**/ .
+	'COMMENT', 'MULTILINECOMMENT','DOT',
 	# Literales: IDs, Int-Constants, Char-Constant, String-Constant 
 	'ID', 'INTCONST', 'CHARCONST', 'STRCONST',
     #Literales - num data s
    'FLOATCONST','BOOLCONST','DOUBLECONST','LONGCONST',
-	#Operadores primarios . ?. ++ -- ->
-	'MEMBERACCESS', 'CONDMEMBACCESS', 'INCREMENT', 'DECREMENT', 'ARROW',
+	#Operadores primarios ++ -- ->
+	'INCREMENT', 'DECREMENT', 'ARROW',
 	# Op. unarios ! 
-	'LNOT',
+	'NOT',
 	# * / %
 	'MULT', 'DIVIDE', 'MOD',
 	# + -
 	'PLUS', 'MINUS',
 	# < > <= >=
 	'LT', 'GT', 'LE', 'GE',
-	#  == !=
-	'EQ', 'NE',
+	# !=
+	'NE',
     #AND ,OR
     'AND', 'OR',
 	# Op. lambda y de asignacion = == += -= *= /= %= &= |= ^= 
-	'EQUAL', 'BOOLEQUAL', 'PLUSEQUAL', 'MINUSEQUAL', 'TIMESEQUAL', 'DIVEQUAL', 'MODEQUAL',
-	'ANDEQUAL', 'OREQUAL', 'XOREQUAL', 
+	'EQUAL', 'BOOLEQUAL', 'PLUSEQUAL', 'MINUSEQUAL',
 	# ( ) { } [ ] , . ; :
 	'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'COMMA', 'STMT_TERMINATOR', 'COLON'
 ] + list(reserved.values())
@@ -73,12 +72,9 @@ t_ignore_MULTILINE_COMMENT = r'/\*(.|\n)*?\*/'
 t_ignore = ' \t\x0c'
 
 # Operadores
-t_MEMBERACCESS		= r'\.'
-t_CONDMEMBACCESS	= r'\?\.'
-t_INCREMENT			= r'\+\+'
-t_DECREMENT			= r'--'
+t_DOT		        = r'\.'
 t_ARROW				= r'->'
-t_LNOT				= r'!'
+t_NOT				= r'!'
 t_MULT				= r'\*'
 t_DIVIDE 			= r'/'
 t_MOD   			= r'%'
@@ -88,7 +84,6 @@ t_LT				= r'<'
 t_GT				= r'>'
 t_LE 				= r'<='
 t_GE  				= r'>='
-t_EQ   				= r'=='
 t_NE   				= r'!='
 t_AND  			    = r'&&'
 t_OR    			= r'\|\|'
@@ -96,12 +91,9 @@ t_EQUAL     		= r'='
 t_BOOLEQUAL         = r'=='
 t_PLUSEQUAL   		= r'\+='
 t_MINUSEQUAL  		= r'-='
-t_TIMESEQUAL 		= r'\*='
-t_DIVEQUAL  		= r'/='
-t_MODEQUAL 			= r'%='
-t_ANDEQUAL   		= r'&='
-t_OREQUAL    		= r'\|='
-t_XOREQUAL    		= r'\^='
+t_INCREMENT			= r'\+\+'
+t_DECREMENT			= r'--'
+
 
 # Delimitadores
 t_LPAREN           = r'\('
@@ -114,63 +106,50 @@ t_COMMA            = r','
 t_STMT_TERMINATOR  = r';'
 t_COLON            = r':'
 
-# IDs and Keywords
-def t_ID(t):
-	r'[a-zA-Z_@][a-zA-Z_0-9]*'
-	t.type = reserved.get(t.value,'ID')    #  Check for reserved words
-	return t
-
-# Literales INT
-t_INTCONST = r'\d+([uU]|[lL]|[uU][lL]|[lL][uU])?'
-
-# Literales STR
-t_STRCONST = r'\"([^\\\n]|(\\.))*?\"'
-
-
-# Literales CHAR
-t_CHARCONST = r'(L)?\'([^\\\n]|(\\.))*?\''
-
-# Literales FLOAT
 def t_FLOATCONST(t):
     r'(\d+\.\d+)[fF]'
+    #r'(\d*\.\d+)[fF]|[-]?(\d+\.\d*)[fF]'
+    #r'\d*\.\d+[fF]|\d*\.\d+E [+-]?\d'
     t.value = float(t.value[:-1])  # Remove 'f' or 'F' suffix
     return t
 
-# Literales BOOL
 def t_BOOLCONST(t):
     r'true|false'
     t.value = True if t.value == 'true' else False
     return t
 
-# Literales DOUBLE
-def t_DOUBLECONST(t):
-    r'\d+\.\d+[dD]|\d*\.\d+E [+-]?\d'
-    t.value = float(t.value[:-1])  #Quita sufijo 'd','D'
+def t_CHARCONST(t):
+    r"\'.*?\'"
+    t.value = t.value[1]  # Extract the character inside the single quotes
     return t
 
-# Literales LONG
+# It can't receive exponential numbers
+def t_DOUBLECONST(t):
+    #r'(\d*\.\d+)[dD]|[-]?(\d+\.\d*)[dD]'
+    r'\d+\.\d+[dD]|\d*\.\d+E [+-]?\d'
+    t.value = float(t.value[:-1])  # Remove 'd' or 'D' suffix
+    return t
+
 def t_LONGCONST(t):
     r'\d+[lL]'
-    t.value = int(t.value[:-1])  #Quita sufijo 'l','L' 
+    t.value = int(t.value[:-1])  # Remove 'l' or 'L' suffix
     return t
 
-#String ignorar quotes
-def t_STRING(t):
+def t_INTCONST(t):
+    #r'[-]?\d+'
+    r'\d+'
+    t.value = int(t.value)
+    return t
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9\']*'
+    t.type = reserved.get(t.value,'ID')    # Check for reserved words
+    return t
+
+def t_STRCONST(t):
     r'\"([^"\\]|\\.)*\"'
     t.value = t.value[1:-1]  # Remove quotes
     return t
-
-#Single line comment (ignored)
-def t_SINGLELINE_COMMENT(t):
-    r'//.*'
-    pass
-
-#Multiple line comment (ignored)
-def t_MULTILINE_COMMENT(t):
-    r'/\*(.|\n)*?\*/'
-    t.lineno += t.value.count('\n')
-    pass
-
 #------------------------------------------------------------------
 #Reglas
 
@@ -178,11 +157,6 @@ def t_MULTILINE_COMMENT(t):
 def t_NEWLINE(t):
 	r'\n+'
 	t.lexer.lineno += len(t.value)
-
-# Preprocessor directive (ignored)
-def t_PREPROCESSOR(t):
-	r'\#(.)*?\n'
-	t.lineno += 1
 
 #Regla de manejo de errores
 def t_error(t):
