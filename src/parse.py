@@ -110,6 +110,10 @@ def p_term_div(p):
     'term : term DIVIDE factor'
     p[0] = ('divide', p[1], p[3])
 
+def p_term_mod(p):
+    'term : term MOD factor'
+    p[0] = ('mod', p[1], p[3])
+
 def p_term_factor(p):
     'term : factor'
     p[0] = p[1]
@@ -256,9 +260,12 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-data_file = open("./test/PruebaParser.txt", "r")
+##Lectura de parser para pruebas
+"""
+data_file = open("./test/test_arrays.txt", "r")
 data = data_file.read()
 
 result = parser.parse(data)
 print("Parsed expression:")
 print(result)
+"""
