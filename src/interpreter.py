@@ -1,25 +1,26 @@
-
-# Autor: Andrea Catalina Fernández Mena
+# Autor: Andrea Catalina Fernández Mena A01197705
 # Fecha: 20/05/2024
 # Descripción: Intérprete - Traduce cuádruplos a pseudo-código
 
-from codegen import QuadrupleGenerator
+from codegen import CodeGen
 
-class IntermediateCodeInterpreter:
+class IR_Interpret:
     def __init__(self, quadruples):
         self.quadruples = quadruples
         self.output = []
 
+    #Recorre la lista de cuadruplos y procesa a pseudocodigo
     def interpret(self):
         for quad in self.quadruples:
             self._process_quadruple(quad)
         return '\n'.join(self.output)
 
+    #Genera pseudocodigo con base en la posición del cuadruplo y lo interpreta añadiendo los espacios o simbolos legibles
     def _process_quadruple(self, quad):
-        op = quad[0]       # La operación a realizar (e.g., '=', '+', 'write')
-        arg1 = quad[1]     # Primer argumento/operando (e.g., valor a asignar, primer operando en una suma)
-        arg2 = quad[2]     # Segundo argumento/operando (e.g., segundo operando en una suma)
-        result = quad[3]   # Resultado de la operación (e.g., variable donde se almacenará el resultado)
+        op = quad.operator
+        arg1 = quad.arg1
+        arg2 = quad.arg2
+        result = quad.result
 
         if op == '=':
             self.output.append(f"{result} = {arg1}")
@@ -33,12 +34,14 @@ class IntermediateCodeInterpreter:
             self.output.append(f"{result} = {arg1} < {arg2}")
         elif op == '>':
             self.output.append(f"{result} = {arg1} > {arg2}")
+        elif op == '>=':
+            self.output.append(f"{result} = {arg1} > {arg2}")
         elif op == 'gotofalse':
-            self.output.append(f"if not {arg1} goto {arg2}")
+            self.output.append(f"if not {arg1} goto {result}")
+        elif op == 'gototrue':
+            self.output.append(f"if {arg1} goto {result}")
         elif op == 'goto':
-            self.output.append(f"goto {arg1}")
-        elif op.endswith(':'):
-            self.output.append(f"{op}")
+            self.output.append(f"goto {result}")
         elif op == 'declare_array':
             self.output.append(f"declare {arg1} array {arg2}[{result}]")
         elif op == 'array_assign':
@@ -48,17 +51,15 @@ class IntermediateCodeInterpreter:
         else:
             raise ValueError(f"Unknown operation: {op}")
 
-# Ejemplo de uso
-ast2 = ('programstart', 'test', (('statement', ('array_declaration', ('datatype', 'int'), 'arr', 10)), 
-                                ('statement', ('array_assignment', 'arr', ('factor', 0), ('plus', ('factor', 1), ('factor', 3)))), 
-                                ('statement', ('array_assignment', 'arr', ('plus', ('factor', 1), ('factor', 3)), ('mult', ('factor', 5), ('factor', 8)))), 
-                                ('statement', ('assignment', 'x', '=', ('plus', ('factor', ('array_access', 'arr', ('factor', 0))), 
-                                                                             ('factor', ('array_access', 'arr', ('factor', 1)))))), 
-                                ('statement', ('write', ('factor', ('array_access', 'arr', ('plus', ('factor', 0), ('factor', 1))))))))
 
-generator2 = QuadrupleGenerator(ast2)
-quadruples2 = generator2.generate()
+# Ejemplo de uso con el AST y el generador de cuádruplos definidos previamente
+"""
+ast2 = ('programstart', 'main', (('statement', ('declaration', ('datatype', 'int'), ('declareid_multiple', ('declareid_multiple', ('declareid_multiple', ('declareid_single', 'i'), 'n'), 'f'), 'x'))), ('statement', ('writeln', ('factor', 'texto dump'))), ('statement', ('assignment', 'f', '=', ('factor', 5))), ('statement', ('for', ('assignment', 'x', '=', ('factor', 0)), ('lt', ('factor', 'x'), ('factor', 'f')), ('increment', 'x'), (('statement', ('assignment', 'n', '=', ('plus', ('factor', 'x'), ('factor', 'f')))),))), ('statement', ('writeln', ('factor', 'n')))))
+quad_gen = CodeGen(ast2)
+quadruples = quad_gen.generate()
 
-interpreter = IntermediateCodeInterpreter(quadruples2)
+# Intérprete de cuádruplos a pseudocódigo
+interpreter = IR_Interpret(quadruples)
 pseudo_code = interpreter.interpret()
 print(pseudo_code)
+"""

@@ -1,1 +1,0 @@
-Traduce cuádruplos a pseudo-código

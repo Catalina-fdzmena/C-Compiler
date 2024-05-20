@@ -1,0 +1,17 @@
+program main{
+	int i,n,x;
+	
+	writeln("factorial while");
+	n = 5;
+	x = 1;
+	while (n>=1)
+	{
+		x = x * n;
+		n--;
+		if((x%2)==0){
+			writeln("es par");
+		}
+	}
+	writeln(x);
+	
+}

@@ -1,4 +1,4 @@
-# Autor: Andrea Catalina Fernández Mena
+# Autor: Andrea Catalina Fernández Mena A01197705
 # Fecha: 20/05/2024
 # Descripción: Parser - Consume tokens del lexer y construye AST(Abstract Syntax Tree)
 
@@ -55,22 +55,22 @@ def p_declaration(p):
 # Declarar múltiples variables
 def p_declareid_single(p):
     'declareid : ID'
-    p[0] = ('declareid', p[1])
+    p[0] = ('declareid_single', p[1])
     
 # Variable nombre con data
 def p_declareid_singlev(p):
     'declareid : assignment'
-    p[0] = ('declareid', p[1])
+    p[0] = ('declareid_single_d', p[1])
 
 # Múltiples variables en la misma línea - solo nombre
 def p_declareid_multiple(p):
     'declareid : declareid COMMA ID'
-    p[0] = ('declareid', p[1], p[3])
+    p[0] = ('declareid_multiple', p[1], p[3])
     
 # Múltiples variables en la misma línea - nombre y data
 def p_declareid_multiplev(p):
     'declareid : declareid COMMA assignment'
-    p[0] = ('declareid', p[1], p[3])
+    p[0] = ('declareid_multiple_d', p[1], p[3])
     
 # Asignación números, operaciones, booleanos, strings, chars
 def p_assignment(p):
@@ -153,7 +153,7 @@ def p_expression_relop(p):
     elif p[2] == '!=':
         p[0] = ('ne', p[1], p[3])
     elif p[2] == '==':
-        p[0] = ('eq', p[1], p[3])
+        p[0] = ('booleq', p[1], p[3])
 
 # Operadores lógicos
 def p_expression_logical(p):
@@ -258,10 +258,17 @@ def p_empty(p):
 def p_error(p):
     print(f"Syntax error in input! at '{p.value}', line {p.lineno}")
 
-parser = yacc.yacc()
+
+#Lectura de parser para todo un analisis de corrido
+def run_parse(data):
+    parser = yacc.yacc()
+    result = parser.parse(data)
+    return result
 
 ##Lectura de parser para pruebas
 """
+
+parser = yacc.yacc()
 data_file = open("./test/test_arrays.txt", "r")
 data = data_file.read()
 

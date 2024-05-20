@@ -1,4 +1,4 @@
-# Autor: Andrea Catalina Fernández Mena
+# Autor: Andrea Catalina Fernández Mena A01197705
 # Fecha: 20/05/2024
 # Descripción: Lexer - responsable de leer el código fuente y producir los tokens.
 
@@ -82,7 +82,7 @@ t_PLUS  			= r'\+'
 t_MINUS 			= r'-'
 t_LT				= r'<'
 t_GT				= r'>'
-t_LE 				= r'<='
+t_LE 				= r'<='   
 t_GE  				= r'>='
 t_NE   				= r'!='
 t_AND  			    = r'&&'
